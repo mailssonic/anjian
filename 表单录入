@@ -1,0 +1,578 @@
+
+dim a(137),f,e,t,d,temp1,h,h2，x1,x2,x3,x4,y1,y2,y3,y4,x5,y5,hwed,x6,y6,x7,y7,x8,y8
+
+
+e = Plugin.lxj_Office.lxj_ExcelOpen("D:\数据录入\工作簿1.xlsx",1)
+For 20
+    FindPic 0,0,2560,1440,"Attachment:\dw1.bmp",1,x7,y7 
+      If x7 > 0 And y7 > 0 Then 
+      Exit For
+       End If
+Next
+
+TracePrint x7
+TracePrint y7
+For 20
+   FindPic 0,0,2560,1440,"Attachment:\dw2.bmp",1,x8,y8
+    If x8 > 0 And y8 > 0 Then 
+    Exit For
+    End If
+Next
+
+TracePrint x8
+TracePrint y8
+x8 = x8 + 50
+
+TracePrint e
+h = Plugin.lxj_Office.lxj_ExcelLastR(1, e)
+TracePrint h
+
+
+For d = 2 To h Step 1//开始总循环
+h2=Plugin.lxj_Office.lxj_ExcelRead (1,d,136,e)
+If h2 = "已录入" Then 
+	Goto g12
+End If
+
+
+hwed = Plugin.WebOperation.GethWnd ("http://192.168.100.166/yn/index.htm?dw=DCB_DCBLB")
+TracePrint hwed
+ini = Plugin.WebOperation.Initialize(hwed)
+TracePrint ini
+	For 10
+    If Plugin.WebOperation.ReadyState() Then
+        TracePrint "打开成功"
+        Exit For
+    End If
+    Delay 1000
+	next
+
+	for 20
+FindPic x7,y7,x8,y8,"Attachment:\新增.bmp",1,x1,y1
+If x1 > 0 And y1 > 0 Then 
+
+MoveTo x1,y1
+LeftClick 1
+Delay 1000
+ Exit For
+End If
+	Next
+TracePrint x1
+
+For 20
+    FindPic x7,y7,x8,y8,"Attachment:\xidu.bmp",1,x2,y2
+    If x2 > 0 And y2 > 0 Then
+      MoveTo x2,y2
+      LeftClick 1
+      Delay 1000
+      Exit For
+    End If
+Next
+
+For 20
+  FindPic x7,y7,x8,y8,"Attachment:\qued.bmp",1,x3,y3
+  If x3 > 0 And y3 > 0 Then
+    MoveTo x3,y3
+    LeftClick 1
+
+    Delay 1000
+    Exit For
+  End If
+Next
+
+	For i = 1 To 136 Step 1  //读入数组
+    
+    	a(i)=Plugin.lxj_Office.lxj_ExcelRead (1,d,i,e)
+
+    
+	Next
+TracePrint a(2)
+
+
+//hwed = Plugin.WebOperation.GethWnd ("http://192.168.100.166/yn/index.htm?dw=DCB_DCBLB")
+//TracePrint hwed
+//ini = Plugin.WebOperation.Initialize(hwed)
+//TracePrint ini
+//For 10
+//    If Plugin.WebOperation.ReadyState() Then
+//        TracePrint "打开成功"
+//        Exit For
+//    End If
+//    //Delay 1000
+//Next
+// //Delay 5000
+//For 200
+//FindPic x7,y7,x8,y8,"Attachment:\保存.bmp",1,x4,y4
+//	If x4 > 0 And y4 > 0 Then
+//	
+//		Exit For
+//	End If
+//TracePrint x4
+//Delay 1000
+//Next
+//
+//
+
+
+
+Call Plugin.WebOperation.SetInputValue("index:6", "德宏州")
+//Delay 500
+Call Plugin.WebOperation.SetInputValue("index:7", "德宏州瑞丽市")
+//Delay 500
+Call Plugin.WebOperation.SetInputValue ("index:8","瑞丽市疾控中心")
+//Delay 500
+//Call Plugin.WebOperation.SetInputValue("index:11", a(6))
+//ab1 = FormatNumber(a(6),0)
+TracePrint ab1
+temp1 = "00" + CStr(a(6))
+
+TracePrint temp1
+Call Plugin.WebOperation.SetInputValue ("id:crowdNumber", temp1)
+Delay 500
+
+
+If a(9)="强制戒毒所" then
+    Call Plugin.WebOperation.SetSelectIndex("index:0","1")
+	elseIf a(9)="其他" then
+    	Call Plugin.WebOperation.SetSelectIndex("index:0","2")
+	elseIf a(9)="美沙酮门诊" then
+    	Call Plugin.WebOperation.SetSelectIndex("index:0", "3")
+    	
+End If
+Delay 500
+temp2 = "00" + CStr(a(7))
+Call Plugin.WebOperation.SetInputValue("index:12",temp2)
+//Delay 1000
+Call Plugin.WebOperation.SetInputValue("index:13",a(8))
+//Delay 1000
+Call Plugin.WebOperation.SetInputValue("index:15",a(12))
+//Delay 1000
+Call Plugin.WebOperation.SetInputValue ("index:16","瑞丽疾病预防控制中心")
+//Delay 1000
+If a(17)="男" Then  
+    	Call Plugin.WebOperation.SetRadioChecked("index:17", "true")
+	Else
+   	 	Call Plugin.WebOperation.SetRadioChecked ("index:18","true")
+End If
+Delay 500 
+Call Plugin.WebOperation.SetInputValue("index:20",a(18))
+Delay 500
+Select Case a(19)
+Case "未婚"
+    Call Plugin.WebOperation.SetRadioChecked ("index:22","true") //情况1
+Case "在婚"
+    Call Plugin.WebOperation.SetRadioChecked("index:23", "true")//情况1
+Case "同居"
+    Call Plugin.WebOperation.SetRadioChecked("index:24", "true")//情况1  
+Case "离异或丧偶"
+    Call Plugin.WebOperation.SetRadioChecked("index:25", "true")//情况1
+    //否则
+End Select
+Delay 500
+
+//If Case a(20)="未婚" then
+//	 Call Plugin.WebOperation.SetRadioChecked("index:22", "true")
+//	 Elseif a(20)="外省" Then
+//
+If a(20)="本省" Then 
+    	Call Plugin.WebOperation.SetRadioChecked("index:27", "true")
+	Elseif a(20)="外省" Then
+   		 Call Plugin.WebOperation.SetRadioChecked ("index:28","true")
+End If
+TracePrint a(20)
+Delay 1000
+If a(21)="汉族" Then  
+   		 Call Plugin.WebOperation.SetRadioChecked("index:35", "true")
+	Else
+    	Call Plugin.WebOperation.SetRadioChecked ("index:36","true")
+End If
+//Delay 1000
+If a(23)="文盲" Then  
+   		 Call Plugin.WebOperation.SetRadioChecked("index:40", "true")
+		ElseIf a(23)="小学" Then  
+   		 Call Plugin.WebOperation.SetRadioChecked("index:41", "true")
+		ElseIf a(23)="初中" Then  
+   			 Call Plugin.WebOperation.SetRadioChecked("index:42", "true")
+		ElseIf a(23)="高中或中专" Then  
+    		Call Plugin.WebOperation.SetRadioChecked("index:43", "true")
+		ElseIf a(23)="大专及以上" Then 
+    		Call Plugin.WebOperation.SetRadioChecked ("index:44","true")
+End If
+TracePrint a(23)
+//Delay 1000
+Call Plugin.WebOperation.SetInputValue("index:46", a(24))
+If a(25)="不知道" Then  //C01
+    Call Plugin.WebOperation.SetRadioChecked("index:50", "true")
+ElseIf a(25)="否" Then  
+    Call Plugin.WebOperation.SetRadioChecked("index:49", "true")
+Elseif a(25)="是" Then  
+    Call Plugin.WebOperation.SetRadioChecked ("index:48","true")
+End If
+//Delay 1000
+If a(26)="不知道" Then  
+    Call Plugin.WebOperation.SetRadioChecked("index:54", "true")
+ElseIf a(26)="不可能" Then  
+    Call Plugin.WebOperation.SetRadioChecked("index:53", "true")
+Elseif a(26)="可能" Then  
+    Call Plugin.WebOperation.SetRadioChecked ("index:52","true")
+End If
+//Delay 1000
+If a(27)="不知道" Then //C03 
+    Call Plugin.WebOperation.SetRadioChecked("index:58", "true")
+ElseIf a(27)="不可以" Then  
+    Call Plugin.WebOperation.SetRadioChecked("index:57", "true")
+Elseif a(27)="可以" Then  
+    Call Plugin.WebOperation.SetRadioChecked ("index:56","true")
+End If
+//C04
+//Delay 1000
+If a(28)="不知道" Then //C04
+    Call Plugin.WebOperation.SetRadioChecked("index:62", "true")
+ElseIf a(28)="不可以" Then  
+    Call Plugin.WebOperation.SetRadioChecked("index:61", "true")
+Elseif a(28)="可以" Then  
+    Call Plugin.WebOperation.SetRadioChecked ("index:60","true")
+End If
+//Delay 1000
+If a(29)="不知道" Then //C05
+    Call Plugin.WebOperation.SetRadioChecked("index:66", "true")
+ElseIf a(29)="不会" Then  
+    Call Plugin.WebOperation.SetRadioChecked("index:65", "true")
+Elseif a(29)="会" Then  
+    Call Plugin.WebOperation.SetRadioChecked ("index:64","true")
+End If
+//Delay 1000
+If a(30)="不知道" Then //C06
+    Call Plugin.WebOperation.SetRadioChecked("index:70", "true")
+ElseIf a(30)="不可以" Then  
+    Call Plugin.WebOperation.SetRadioChecked("index:69", "true")
+Elseif a(30)="可以" Then  
+    Call Plugin.WebOperation.SetRadioChecked ("index:68","true")
+End If
+//Delay 1000
+If a(31)="不知道" Then //C07
+    Call Plugin.WebOperation.SetRadioChecked("index:74", "true")
+ElseIf a(31)="否" Then  
+    Call Plugin.WebOperation.SetRadioChecked("index:73", "true")
+ElseIf a(31)="是" Then  
+    Call Plugin.WebOperation.SetRadioChecked ("index:72","true")
+End If
+//Delay 1000
+If a(32)="不知道" Then //C08
+    Call Plugin.WebOperation.SetRadioChecked("index:78", "true")
+ElseIf a(32)="不需要" Then  
+    Call Plugin.WebOperation.SetRadioChecked("index:77", "true")
+Elseif a(32)="需要" Then 
+    Call Plugin.WebOperation.SetRadioChecked ("index:76","true")
+End If
+//Delay 1000
+If InStr(a(43),"海洛因") > 0 Then 
+    Call Plugin.WebOperation.SetCheckBoxChecked ("index:80","true")	
+    Delay 1000
+    TracePrint InStr(a(43),"海洛因")
+End If
+If InStr(a(43),"可卡因") > 0 Then 
+    Call Plugin.WebOperation.SetCheckBoxChecked ("index:81","true")	
+    Delay 1000
+End If
+//Delay 1000
+If InStr(a(43),"鸦片") > 0 Then 
+    Call Plugin.WebOperation.SetCheckBoxChecked ("index:82","true")	
+End If
+//Delay 1000
+If InStr(a(43),"大麻") > 0 Then 
+    Call Plugin.WebOperation.SetCheckBoxChecked ("index:83","true")	
+End If
+//Delay 1000
+If InStr(a(43),"吗啡") > 0 Then 
+    Call Plugin.WebOperation.SetCheckBoxChecked ("index:84","true")	
+End If
+//Delay 1000
+If InStr(a(43),"冰毒") > 0 Then 
+    Call Plugin.WebOperation.SetCheckBoxChecked ("index:85","true")	
+End If
+//Delay 1000
+If InStr(a(43),"杜冷丁")> 0 Then 
+    Call Plugin.WebOperation.SetCheckBoxChecked ("index:86","true")	
+End If
+//Delay 1000
+if InStr(a(43),"K粉")> 0 Then 
+    Call Plugin.WebOperation.SetCheckBoxChecked ("index:87","true")	
+End If
+//Delay 1000
+if InStr(a(43),"摇头丸") > 0 Then 
+    Call Plugin.WebOperation.SetCheckBoxChecked ("index:88","true")	
+End If
+//Delay 1000
+if InStr(a(43),"麻古") > 0 Then 
+    Call Plugin.WebOperation.SetCheckBoxChecked ("index:89","true")	
+End If
+//Delay 1000
+if InStr(a(43),"其他") > 0 Then 
+    Call Plugin.WebOperation.SetCheckBoxChecked ("index:90","true")	
+End If
+//Delay 1000
+If a(45)="是" Then  //D02
+    Call Plugin.WebOperation.SetRadioChecked("index:94", "true")
+Elseif  a(45)="否" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:95", "true")
+    Goto  E00a
+End If
+Delay 1000
+If a(46)="是" Then  //D03
+    Call Plugin.WebOperation.SetRadioChecked("index:97", "true")
+Elseif a(46)="否" Then  
+    Call Plugin.WebOperation.SetRadioChecked("index:98", "true")
+    Goto D05
+End If
+Delay 500
+Call Plugin.WebOperation.SetInputValue("index:100", a(47))//D04
+Delay 500
+Rem D05
+//Delay 500
+If a(48)="是" Then  //D05
+    Call Plugin.WebOperation.SetRadioChecked("index:102", "true")
+ElseIf a(48)="否" Then  //D05
+    Call Plugin.WebOperation.SetRadioChecked("index:103", "true")
+    Goto E00a
+End If
+Delay 500
+If a(49)="是" Then  //D06
+ 	Call Plugin.WebOperation.SetRadioChecked("index:105", "true")
+  ElseIf  a(48)="否" Then  //D05
+ 	Call Plugin.WebOperation.SetRadioChecked("index:106", "true")
+  Goto E00a
+End If
+//Delay 1000
+If a(50)="从未共用" Then  //D07
+ 	Call Plugin.WebOperation.SetRadioChecked("index:108", "true")
+	ElseIf a(50)="有时共用" Then  //D05
+ 	Call Plugin.WebOperation.SetRadioChecked("index:109", "true")
+  ElseIf  a(50) ="每次都共用" Then  //D05
+ 	Call Plugin.WebOperation.SetRadioChecked("index:110", "true")
+ 
+End If
+
+
+
+
+Rem E00a
+//Delay 1000
+If a(55)="是" Then  //E00a
+    Call Plugin.WebOperation.SetRadioChecked("index:112", "true")
+ElseIf a(55)="否" Then
+    Call Plugin.WebOperation.SetRadioChecked("index:113", "true")
+    Goto G01
+End If
+//Delay 1000
+If a(56)="是" Then  //E00b
+    Call Plugin.WebOperation.SetRadioChecked("index:115", "true")
+Elseif  a(56)="否" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:116", "true")
+    Goto  E01
+End If
+//Delay 1000
+If a(57)="是" Then  //E00c
+    Call Plugin.WebOperation.SetRadioChecked("index:118", "true")
+Elseif  a(57)="否" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:119", "true")
+End If
+//Delay 1000
+Rem E01
+If a(58)="是" Then  //E01
+    Call Plugin.WebOperation.SetRadioChecked("index:121", "true")
+Elseif  a(58)="否" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:122", "true")
+    Goto  E03
+End If
+Delay 500
+If a(59)="是" Then  //E02
+    Call Plugin.WebOperation.SetRadioChecked("index:124", "true")
+Elseif  a(59)="否" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:125", "true")
+End If
+//Delay 1000
+Rem E03
+If a(60)="是" Then  //E03
+    Call Plugin.WebOperation.SetRadioChecked("index:127", "true")
+	ElseIf  a(60)="否" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:128", "true")
+    Goto  F01
+End If
+Delay 1000
+If a(61)="从未使用" Then  //E04
+    Call Plugin.WebOperation.SetRadioChecked("index:130", "true")
+	ElseIf  a(61)="有时使用" Then  //D05
+    Call Plugin.WebOperation.SetRadioChecked("index:131", "true")
+	ElseIf  a(61)="每次都用" Then  //D05
+    Call Plugin.WebOperation.SetRadioChecked("index:132", "true")
+End If
+Delay 1000
+If a(62)="是" Then  //E05
+    Call Plugin.WebOperation.SetRadioChecked("index:134", "true")
+	ElseIf  a(62)="否" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:135", "true")
+End If
+//Delay 1000
+Rem F01
+If a(63)="是" Then  //F01
+    Call Plugin.WebOperation.SetRadioChecked("index:137", "true")
+ElseIf  a(63)="否" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:138", "true")
+    Goto G01
+End If
+//Delay 1000
+If a(64)="从未使用" Then  //f02
+    Call Plugin.WebOperation.SetRadioChecked("index:140", "true")
+	ElseIf  a(64)="有时使用" Then  //D05
+    Call Plugin.WebOperation.SetRadioChecked("index:141", "true")
+	ElseIf  a(64)="每次都用" Then  //D05
+    Call Plugin.WebOperation.SetRadioChecked("index:142", "true")
+End If
+Delay 1000
+If a(65) = "是" Then //F03
+    Call Plugin.WebOperation.SetRadioChecked("index:144", "true")
+ElseIf  a(65)="否" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:145", "true")
+End If
+//Delay 1000
+Rem G01
+If a(66) = "是" Then //g01
+    Call Plugin.WebOperation.SetRadioChecked("index:147", "true")
+ElseIf  a(66)="否" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:148", "true")
+End If
+Delay 1000
+If a(67) = "是" Then //g02
+    Call Plugin.WebOperation.SetRadioChecked("index:150", "true")
+ElseIf  a(67)="否" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:151", "true")
+End If
+//Delay 1000
+If a(68) = "是" Then //g03
+    Call Plugin.WebOperation.SetRadioChecked("index:153", "true")
+ElseIf  a(68)="否" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:154", "true")
+End If
+//Delay 1000
+//If a(69) = "" Then 
+	//Goto
+//End If
+Call Plugin.WebOperation.SetInputValue("index:156", a(69))//H03
+Delay 500
+If a(70) = "阴性" Then //H04
+    Call Plugin.WebOperation.SetRadioChecked("index:158", "true")
+	ElseIf  a(70)="阳性" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:159", "true")
+	ElseIf a(70)="不知道" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:160", "true")
+End If
+Delay 500
+If a(75) = "是" Then //t01
+    Call Plugin.WebOperation.SetRadioChecked("index:162", "true")
+	ElseIf  a(75)="否" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:163", "true")
+End If
+//Delay 1000
+If a(76) = "是" Then //T02a
+    Call Plugin.WebOperation.SetRadioChecked("index:165", "true")
+    Delay 1000
+    Call Plugin.WebOperation.SetInputValue("index:168", a(77))
+	ElseIf  a(76)="否" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:166", "true")
+    
+    
+End If
+Delay 1000
+If a(78) = "阳性" Then //T031
+    Call Plugin.WebOperation.SetRadioChecked("index:170", "true")
+ElseIf  a(78)="阴性" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:171", "true")
+    Goto T04
+End If
+//Delay 1000
+If a(79) = "阳性" Then //T032
+    Call Plugin.WebOperation.SetRadioChecked("index:173", "true")
+ElseIf  a(79)="阴性" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:174", "true")
+End If
+//Delay 1000
+If a(80) = "阳性" Then //T033
+    Call Plugin.WebOperation.SetRadioChecked("index:176", "true")
+	ElseIf  a(80)="阴性" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:177", "true")
+	ElseIf  a(80)="可疑" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:178", "true")
+	ElseIf  a(80)="未检测" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:179", "true")
+End If
+Delay 500
+Rem T04
+If a(81) = "阳性" Then //T041
+    Call Plugin.WebOperation.SetRadioChecked("index:181", "true")
+ElseIf  a(81)="阴性" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:182", "true")
+    Goto T05
+End If
+Delay 500
+If a(82) = "阳性" Then //T042
+    Call Plugin.WebOperation.SetRadioChecked("index:184", "true")
+ElseIf  a(82)="阴性" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:185", "true")
+End If
+Delay 500
+Rem T05
+If a(84) = "阳性" Then //T04a
+    Call Plugin.WebOperation.SetRadioChecked("index:187", "true")
+ElseIf  a(84)="阴性" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:188", "true")
+    Goto a1
+End If
+If a(85) = "阳性" Then //T04a
+    Call Plugin.WebOperation.SetRadioChecked("index:190", "true")
+ElseIf  a(85)="阴性" Then 
+    Call Plugin.WebOperation.SetRadioChecked("index:191", "true")
+End If
+Rem a1
+Call Plugin.WebOperation.SetInputValue ("index:193",a(86))
+Call Plugin.WebOperation.SetInputValue("index:194", a(87))
+
+Rem g11
+
+
+
+For 200
+FindPic x7,y7,x8,y8,"Attachment:\保存.bmp",1,x4,y4
+	If x4 > 0 And y4 > 0 Then
+		MoveTo x4,y4
+   		LeftClick 1
+		Exit For
+	End If
+	TracePrint x4
+	Delay 1000
+Next
+
+//Delay 1000
+
+
+mm=Plugin.lxj_Office.lxj_ExcelWrite(1,d,136,"已录入")
+//Delay 1000
+
+Delay 1000
+//MessageBox 1
+
+For 200
+FindPic x7,y7,x8,y8,"Attachment:\返回.bmp",1,x6,y6
+	If x6 > 0 And y6 > 0 Then
+		MoveTo x6,y6
+   		LeftClick 1
+		Exit For
+	End If
+	TracePrint x6
+	Delay 1000
+Next
+MessageBox 1
+Delay 3000
+Rem g12
+Next
+Plugin.lxj_Office.lxj_ExcelClose(e)
